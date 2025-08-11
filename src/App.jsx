@@ -7,41 +7,42 @@ import usersFromServer from './api/users';
 import categoriesFromServer from './api/categories';
 import productsFromServer from './api/products';
 
-const products = productsFromServer.map(product => {
-  const category = categoriesFromServer.find(
-    cat => cat.id === product.categoryId,
-  );
-  const user = usersFromServer.find(use => use.id === category.ownerId);
-  const userClass = user.sex === 'male' ? 'has-text-link' : 'has-text-danger';
-
-  return {
-    id: product.id,
-    productName: product.name,
-    category: `${category.icon} - ${category.title}`,
-    userName: user.name,
-    userClass,
-  };
-});
-
-// function prepareProducts(foodProducts, query) {
-//   let preparedProducts = foodProducts;
-//   const normalizedQuery = query.trim().toLowerCase();
+// function prepareProducts(foodProducts, theQuery) {
+//   let preparedProducts = [...foodProducts];
+//   const normalizedQuery = theQuery.trim().toLowerCase();
 
 //   if (normalizedQuery) {
 //     preparedProducts = preparedProducts.filter(product =>
-//       product.name.toLowerCase().includes(normalizedQuery),);
+//       product.name.toLowerCase().includes(normalizedQuery),
+//     );
 //   }
 
 //   return preparedProducts;
 // }
 
 export const App = () => {
-  // const [activeUserId, setActiveUserId] = useState(null);
-  // const [activeUserId, setActiveUserId] = useState(usersFromServer[0].id);
-  // const selectedUser =
-  //   usersFromServer.find(user => user.id === activeUserId) || null;
+  // const [generalProducts, setGeneralProducts] = useState(productsFromServer);
   const [query, setQuery] = useState('');
-  // const visibleProducts = prepareProducts(products, query);
+
+  const products = productsFromServer.map(product => {
+    const category = categoriesFromServer.find(
+      cat => cat.id === product.categoryId,
+    );
+    const user = usersFromServer.find(use => use.id === category.ownerId);
+    const userClass = user.sex === 'male' ? 'has-text-link' : 'has-text-danger';
+
+    return {
+      id: product.id,
+      productName: product.name,
+      category: `${category.icon} - ${category.title}`,
+      userName: user.name,
+      userClass,
+    };
+  });
+
+  // setGeneralProducts(products);
+
+  // const visibleProducts = prepareProducts(generalProducts, query);
 
   return (
     <div className="section">
