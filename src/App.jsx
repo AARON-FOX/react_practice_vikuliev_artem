@@ -23,12 +23,25 @@ const products = productsFromServer.map(product => {
   };
 });
 
+// function prepareProducts(foodProducts, query) {
+//   let preparedProducts = foodProducts;
+//   const normalizedQuery = query.trim().toLowerCase();
+
+//   if (normalizedQuery) {
+//     preparedProducts = preparedProducts.filter(product =>
+//       product.name.toLowerCase().includes(normalizedQuery),);
+//   }
+
+//   return preparedProducts;
+// }
+
 export const App = () => {
-  const [activeUserId, setActiveUserId] = useState(usersFromServer[0].id);
-  const selectedUser =
-    usersFromServer.find(user => user.id === activeUserId) ||
-    usersFromServer[0].id;
-  const [filterUser, setFilterUser] = useState(null);
+  // const [activeUserId, setActiveUserId] = useState(null);
+  // const [activeUserId, setActiveUserId] = useState(usersFromServer[0].id);
+  // const selectedUser =
+  //   usersFromServer.find(user => user.id === activeUserId) || null;
+  const [query, setQuery] = useState('');
+  // const visibleProducts = prepareProducts(products, query);
 
   return (
     <div className="section">
@@ -43,12 +56,12 @@ export const App = () => {
               <a
                 data-cy="FilterAllUsers"
                 href="#/"
-                className={filterUser !== null ? 'is-active' : ''}
+                // className={activeUserId === null ? 'is-active' : ''}
               >
                 All
               </a>
 
-              {usersFromServer.map(user => (
+              {/* {usersFromServer.map(user => (
                 <a
                   data-cy="FilterUser"
                   href="#/"
@@ -58,15 +71,14 @@ export const App = () => {
 
                     if (user.id !== activeUserId) {
                       setActiveUserId(user.id);
-                      setFilterUser(user.id);
                     }
                   }}
                 >
                   {user.name}
                 </a>
-              ))}
+              ))} */}
 
-              {/* <a data-cy="FilterUser" href="#/">
+              <a data-cy="FilterUser" href="#/">
                 User 1
               </a>
 
@@ -76,7 +88,7 @@ export const App = () => {
 
               <a data-cy="FilterUser" href="#/">
                 User 3
-              </a> */}
+              </a>
             </p>
 
             <div className="panel-block">
@@ -86,7 +98,10 @@ export const App = () => {
                   type="text"
                   className="input"
                   placeholder="Search"
-                  value="qwe"
+                  value={query}
+                  onChange={event => {
+                    setQuery(event.target.value);
+                  }}
                 />
 
                 <span className="icon is-left">
