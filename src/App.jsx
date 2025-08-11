@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
-import React from 'react';
+import React, { useState } from 'react';
 import './App.scss';
 
 // import cn from 'classnames';
@@ -24,7 +24,11 @@ const products = productsFromServer.map(product => {
 });
 
 export const App = () => {
-
+  const [activeUserId, setActiveUserId] = useState(usersFromServer[0].id);
+  const selectedUser =
+    usersFromServer.find(user => user.id === activeUserId) ||
+    usersFromServer[0].id;
+  const [filterUser, setFilterUser] = useState(null);
 
   return (
     <div className="section">
@@ -36,11 +40,33 @@ export const App = () => {
             <p className="panel-heading">Filters</p>
 
             <p className="panel-tabs has-text-weight-bold">
-              <a data-cy="FilterAllUsers" href="#/">
+              <a
+                data-cy="FilterAllUsers"
+                href="#/"
+                className={filterUser !== null ? 'is-active' : ''}
+              >
                 All
               </a>
 
-              <a data-cy="FilterUser" href="#/">
+              {usersFromServer.map(user => (
+                <a
+                  data-cy="FilterUser"
+                  href="#/"
+                  className={selectedUser.id === user.id ? 'is-active' : ''}
+                  onClick={event => {
+                    event.preventDefault();
+
+                    if (user.id !== activeUserId) {
+                      setActiveUserId(user.id);
+                      setFilterUser(user.id);
+                    }
+                  }}
+                >
+                  {user.name}
+                </a>
+              ))}
+
+              {/* <a data-cy="FilterUser" href="#/">
                 User 1
               </a>
 
@@ -50,7 +76,7 @@ export const App = () => {
 
               <a data-cy="FilterUser" href="#/">
                 User 3
-              </a>
+              </a> */}
             </p>
 
             <div className="panel-block">
