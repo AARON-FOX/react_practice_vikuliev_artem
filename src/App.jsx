@@ -7,42 +7,41 @@ import usersFromServer from './api/users';
 import categoriesFromServer from './api/categories';
 import productsFromServer from './api/products';
 
-// function prepareProducts(foodProducts, theQuery) {
-//   let preparedProducts = [...foodProducts];
-//   const normalizedQuery = theQuery.trim().toLowerCase();
+const products = productsFromServer.map(product => {
+  const category = categoriesFromServer.find(
+    cat => cat.id === product.categoryId,
+  );
+  const user = usersFromServer.find(use => use.id === category.ownerId);
+  const userClass = user.sex === 'male' ? 'has-text-link' : 'has-text-danger';
 
-//   if (normalizedQuery) {
-//     preparedProducts = preparedProducts.filter(product =>
-//       product.name.toLowerCase().includes(normalizedQuery),
-//     );
-//   }
+  return {
+    id: product.id,
+    productName: product.name,
+    category: `${category.icon} - ${category.title}`,
+    userName: user.name,
+    userClass,
+  };
+});
 
-//   return preparedProducts;
-// }
+function prepareProducts(foodProducts, theQuery) {
+  let preparedProducts = [...foodProducts];
+  const normalizedQuery = theQuery.trim().toLowerCase();
+
+  if (normalizedQuery) {
+    preparedProducts = preparedProducts.filter(
+      product => product.productName.toLowerCase().includes(normalizedQuery),
+      // eslint-disable-next-line
+    );
+  }
+
+  return preparedProducts;
+}
 
 export const App = () => {
   // const [generalProducts, setGeneralProducts] = useState(productsFromServer);
   const [query, setQuery] = useState('');
 
-  const products = productsFromServer.map(product => {
-    const category = categoriesFromServer.find(
-      cat => cat.id === product.categoryId,
-    );
-    const user = usersFromServer.find(use => use.id === category.ownerId);
-    const userClass = user.sex === 'male' ? 'has-text-link' : 'has-text-danger';
-
-    return {
-      id: product.id,
-      productName: product.name,
-      category: `${category.icon} - ${category.title}`,
-      userName: user.name,
-      userClass,
-    };
-  });
-
-  // setGeneralProducts(products);
-
-  // const visibleProducts = prepareProducts(generalProducts, query);
+  const visibleProducts = prepareProducts(products, query);
 
   return (
     <div className="section">
@@ -111,11 +110,14 @@ export const App = () => {
 
                 <span className="icon is-right">
                   {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-                  <button
-                    data-cy="ClearButton"
-                    type="button"
-                    className="delete"
-                  />
+                  {query !== '' && (
+                    <button
+                      data-cy="ClearButton"
+                      type="button"
+                      className="delete"
+                      onClick={() => setQuery('')}
+                    />
+                  )}
                 </span>
               </p>
             </div>
@@ -223,7 +225,7 @@ export const App = () => {
             </thead>
 
             <tbody>
-              {products.map(product => (
+              {visibleProducts.map(product => (
                 <tr data-cy="Product" key={product.id}>
                   <td className="has-text-weight-bold" data-cy="ProductId">
                     {product.id}
